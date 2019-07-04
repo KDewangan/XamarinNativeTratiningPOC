@@ -1,0 +1,2 @@
+# XamarinNativeTratiningPOC
+*
