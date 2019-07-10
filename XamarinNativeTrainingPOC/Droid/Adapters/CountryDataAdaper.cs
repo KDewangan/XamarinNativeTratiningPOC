@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Views.Animations;
 using Android.Widget;
 using Com.Bumptech.Glide;
+using Java.Lang;
 
 namespace XamarinNativeTrainingPOC.Droid.Adapters
 {
@@ -14,8 +15,8 @@ namespace XamarinNativeTrainingPOC.Droid.Adapters
     {
 
         Context mContext;
-        List<Row> mData;
-        List<Row> mDataFiltered;
+         List<Row> mData;
+         List<Row> mDataFiltered;
         bool isDark = false;
 
         public CountryDataAdaper(Context mContext, List<Row> mData, bool isDark)
@@ -34,6 +35,8 @@ namespace XamarinNativeTrainingPOC.Droid.Adapters
         }
 
         public override int ItemCount => mData.Count;
+
+       // public Filter Filter => throw new System.NotImplementedException();
 
         public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
         {
@@ -61,9 +64,10 @@ namespace XamarinNativeTrainingPOC.Droid.Adapters
         {
             View layout;
             layout = LayoutInflater.From(mContext).Inflate(Resource.Layout.item_news, parent, false);
-            return new NewsViewHolder(layout);
+            return new NewsViewHolder(layout,isDark);
         }
 
+        
 
         public class NewsViewHolder : RecyclerView.ViewHolder
         {
@@ -71,16 +75,72 @@ namespace XamarinNativeTrainingPOC.Droid.Adapters
             public ImageView img_user;
             public RelativeLayout container;
 
-            public NewsViewHolder(View itemView) : base(itemView)
+            public NewsViewHolder(View itemView,bool isDark) : base(itemView)
             {
                 container = itemView.FindViewById<RelativeLayout>(Resource.Id.container);
                 tv_title = itemView.FindViewById<TextView>(Resource.Id.tv_title);
                 tv_content = itemView.FindViewById<TextView>(Resource.Id.tv_description);
                 tv_date = itemView.FindViewById<TextView>(Resource.Id.tv_date);
                 img_user = itemView.FindViewById<ImageView>(Resource.Id.img_user);
+                if (isDark)
+                {
+                    setDarkTheme();
+                }
+            }
+
+            private void setDarkTheme()
+            {
+
+                container.SetBackgroundResource(Resource.Drawable.card_bg_dark);
+
             }
 
         }
 
+        //public class DataFilter : Filter
+        //{
+        //    private CountryDataAdaper parant;
+        //    public DataFilter(CountryDataAdaper countryDataAdaper)
+        //    {
+        //        this.parant = countryDataAdaper;
+        //    }
+        //    protected override FilterResults PerformFiltering(ICharSequence constraint)
+        //    {
+        //        string Key = constraint.ToString();
+        //        if (string.IsNullOrEmpty(Key))
+        //        {
+
+        //            parant.mDataFiltered = parant.mData;
+
+        //        }
+        //        else
+        //        {
+        //            List<Row> lstFiltered = new List<Row>();
+        //            foreach (Row row in parant.mData)
+        //            {
+
+        //                if (row.Title.ToLower().Contains(Key.ToLower()))
+        //                {
+        //                    lstFiltered.Add(row);
+        //                }
+
+        //            }
+
+        //            parant.mDataFiltered = lstFiltered;
+
+        //        }
+
+
+        //        FilterResults filterResults = new FilterResults();
+        //        filterResults.Values = parant.mDataFiltered ;
+        //        return filterResults;
+        //    }
+
+        //    protected override void PublishResults(ICharSequence constraint, FilterResults results)
+        //    {
+        //        parant.mDataFiltered = (List<Row>)results.Values;
+        //        parant.NotifyDataSetChanged();
+        //    }
+        //}
     }
 }

@@ -158,10 +158,8 @@ namespace XamarinNativeTrainingPOC.Droid
                     // countryDataAdaper.getFilter().filter(search);
 
                 }
-                // NewsRecyclerview.setAdapter(newsAdapter);
+                mainActivity.NewsRecyclerview.SetAdapter(mainActivity.countryDataAdaper);
                 mainActivity.SaveThemeStatePref(mainActivity.isDark);
-
-
             }
         }
     }
