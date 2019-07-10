@@ -1,65 +1,61 @@
-﻿using Android.App;
-using Android.Widget;
-using Android.OS;
-using Android.Support.V7.Widget;
+﻿using System;
 using System.Collections.Generic;
-using Android.Support.Constraints;
-using Android.Runtime;
-using XamarinNativeTrainingPOC.Droid.Adapters;
+using Android.App;
 using Android.Content;
-using XamarinNativeTrainingPOC.Services.Interfaces;
-using XamarinNativeTrainingPOC.Models;
+using Android.OS;
+using Android.Runtime;
+using Android.Support.Constraints;
+using Android.Support.Design.Widget;
+using Android.Support.V7.App;
+using Android.Support.V7.Widget;
+using Android.Views;
+using Android.Widget;
+using XamarinNativeTrainingPOC.Droid.Adapters;
 using XamarinNativeTrainingPOC.ViewModels;
-using System.Threading.Tasks;
 
 namespace XamarinNativeTrainingPOC.Droid
 {
-    [Activity(Label = "XamarinNativeTrainingPOC", MainLauncher = true, Icon = "@mipmap/icon")]
-    public class MainActivity : Activity
+    [Activity(Label = "XamarinNativeTrainingPOC", MainLauncher = true, Icon = "@mipmap/icon", Theme = "@style/AppTheme")]
+    public class MainActivity : AppCompatActivity
     {
         public ConadaDataViewModel ConadaDataViewModel { get; set; }
         RecyclerView NewsRecyclerview;
         ConstraintLayout rootLayout;
-        // FloatingActionButton fabSwitcher;
-
-        //NewsAdapter newsAdapter;
-        //List<NewsItem> mData;
+        FloatingActionButton fabSwitcher;
 
         CountryDataAdaper countryDataAdaper;
 
-
-
-
-        bool isDark = false;
+        bool isDark = true;
 
         EditText searchInput;
+
+        List<Row> RowDataList;
 
         protected override void OnStart()
         {
             base.OnStart();
-            
+
         }
 
-        private async Task LoadViewModel()
-        {
-            if (ConadaDataViewModel == null) ;
-               
-        }
 
         protected async override void OnCreate(Bundle savedInstanceState)
         {
+            this.RequestWindowFeature(WindowFeatures.NoTitle);
             base.OnCreate(savedInstanceState);
             try
             {
                 ConadaDataViewModel = new ConadaDataViewModel();
                 await ConadaDataViewModel.ExecuteLoadItemsCommand();
-                RequestWindowFeature(Android.Views.WindowFeatures.NoTitle);
+                RowDataList = new List<Row>(ConadaDataViewModel.Items.CountryData);
+
                 SetContentView(Resource.Layout.Layout1);
 
                 rootLayout = FindViewById<ConstraintLayout>(Resource.Id.root_layout);
                 searchInput = FindViewById<EditText>(Resource.Id.search_input);
                 NewsRecyclerview = FindViewById<RecyclerView>(Resource.Id.news_rv);
-
+                fabSwitcher = FindViewById<FloatingActionButton>(Resource.Id.fab_switcher);
+                fabSwitcher.Clickable = true;
+                fabSwitcher.SetOnClickListener(new FabClickLitner(this));
 
                 #region tepmData
                 //mData = new List<NewsItem>();
@@ -83,7 +79,7 @@ namespace XamarinNativeTrainingPOC.Droid
                 //mData.Add(new NewsItem("Android R Design Concept 4K", "lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit lorem ipsum dolor sit ", "6 july 1994", Resource.Drawable.xamarin_logo));
                 #endregion
 
-                isDark = getThemeStatePref();
+                isDark = GetThemeStatePref();
                 if (isDark)
                 {
                     searchInput.SetBackgroundResource(Resource.Drawable.search_input_dark_style);
@@ -91,14 +87,13 @@ namespace XamarinNativeTrainingPOC.Droid
                 }
                 else
                 {
-                     searchInput.SetBackgroundResource(Resource.Drawable.search_input_style);
+                    searchInput.SetBackgroundResource(Resource.Drawable.search_input_style);
                     rootLayout.SetBackgroundColor(this.Resources.GetColor(Resource.Color.white));
                 }
 
-                countryDataAdaper = new CountryDataAdaper(this, ConadaDataViewModel.Items.CountryData, isDark);
+                countryDataAdaper = new CountryDataAdaper(this, RowDataList, isDark);
                 NewsRecyclerview.SetAdapter(countryDataAdaper);
                 NewsRecyclerview.SetLayoutManager(new LinearLayoutManager(this));
-
             }
             catch (System.Exception ex)
             {
@@ -106,7 +101,7 @@ namespace XamarinNativeTrainingPOC.Droid
             }
         }
 
-        private void saveThemeStatePref(bool isDark)
+        private void SaveThemeStatePref(bool isDark)
         {
 
             ISharedPreferences pref = ApplicationContext.GetSharedPreferences("myPref", FileCreationMode.Private);
@@ -115,16 +110,60 @@ namespace XamarinNativeTrainingPOC.Droid
             editor.Commit();
         }
 
-        private bool getThemeStatePref()
+        private bool GetThemeStatePref()
         {
 
             ISharedPreferences pref = ApplicationContext.GetSharedPreferences("myPref", FileCreationMode.Private);
             bool isDark = pref.GetBoolean("isDark", false);
             return isDark;
-
         }
 
 
+        public class FabClickLitner : Java.Lang.Object, View.IOnClickListener
+        {
+            private MainActivity mainActivity;
+
+            public FabClickLitner(MainActivity parant)
+            {
+                this.mainActivity = parant;
+            }
+
+            public void Dispose()
+            {
+                // throw new NotImplementedException();
+            }
+
+            public void OnClick(View v)
+            {
+
+
+                mainActivity.isDark = !mainActivity.isDark;
+                if (mainActivity.isDark)
+                {
+
+                    mainActivity.searchInput.SetBackgroundResource(Resource.Drawable.search_input_dark_style);
+                    mainActivity.rootLayout.SetBackgroundColor(mainActivity.Resources.GetColor(Resource.Color.black));
+
+                }
+                else
+                {
+                    mainActivity.searchInput.SetBackgroundResource(Resource.Drawable.search_input_style);
+                    mainActivity.rootLayout.SetBackgroundColor(mainActivity.Resources.GetColor(Resource.Color.white));
+                }
+
+                mainActivity.countryDataAdaper = new CountryDataAdaper(mainActivity, mainActivity.RowDataList, mainActivity.isDark);
+                if (!string.IsNullOrEmpty(mainActivity.searchInput.ToString()))
+                {
+
+                    // countryDataAdaper.getFilter().filter(search);
+
+                }
+                // NewsRecyclerview.setAdapter(newsAdapter);
+                mainActivity.SaveThemeStatePref(mainActivity.isDark);
+
+
+            }
+        }
     }
 }
 

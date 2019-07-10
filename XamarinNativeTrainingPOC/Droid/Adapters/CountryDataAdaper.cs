@@ -46,8 +46,15 @@ namespace XamarinNativeTrainingPOC.Droid.Adapters
             newsViewHolder.tv_title.SetText(mDataFiltered[position].Title, TextView.BufferType.Normal);
             newsViewHolder.tv_content.SetText(mDataFiltered[position].Description, TextView.BufferType.Normal);
             newsViewHolder.tv_date.SetText(System.DateTime.Today.Date.ToString(), TextView.BufferType.Normal);
-           // newsViewHolder.img_user.SetImageURI(Uri.Parse(mDataFiltered[position].imageUri??""));
-            Glide.With(mContext).Load(mDataFiltered[position].imageUri??"http://via.placeholder.com/300.png").Into(newsViewHolder.img_user);
+            // newsViewHolder.img_user.SetImageURI(Uri.Parse(mDataFiltered[position].imageUri??""));
+
+            int radius = 30; // corner radius, higher value = more rounded
+            int margin = 10; // crop margin, set to 0 for corners with no crop
+            Glide.With(mContext)
+                .Load(mDataFiltered[position]
+                .imageUri??"http://via.placeholder.com/300.png")
+                //.Transition(TransitionOptions.)
+                .Into(newsViewHolder.img_user);
         }
 
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)

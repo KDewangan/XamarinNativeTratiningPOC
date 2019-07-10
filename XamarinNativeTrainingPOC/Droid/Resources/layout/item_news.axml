@@ -64,6 +64,7 @@
     </RelativeLayout>
 
     <ImageView
+        android:background="@drawable/circlebg"
         android:id="@+id/img_user"
         android:layout_width="36dp"
         android:layout_height="36dp"
