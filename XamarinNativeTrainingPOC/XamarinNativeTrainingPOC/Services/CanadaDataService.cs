@@ -10,24 +10,28 @@ namespace XamarinNativeTrainingPOC.Services
 {
     public class CanadaDataService: ICanadaDataService<CanadaCountryData>
     {
-        IEnumerable<CanadaCountryData> CountryDataList;
+        
         HttpClient httpClient;
         public CanadaDataService()
         {
             httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri($"{App.BackendUrl}/");
-            CountryDataList = new List<CanadaCountryData>();
-        }
+        }  
 
-        public async Task<IEnumerable<CanadaCountryData>> GetCanadaData()
+        public async Task<CanadaCountryData> GetCanadaData()
         {
-            //if (CrossConnectivity.Current.IsConnected)
-            //{
+          CanadaCountryData CountryData = new CanadaCountryData();
+            try
+            {
                 var json = await httpClient.GetStringAsync($"/s/2iodh4vg0eortkl/facts.json");
-            CountryDataList = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<CanadaCountryData>>(json));
-            //}
+                CountryData = await Task.Run(() => JsonConvert.DeserializeObject<CanadaCountryData>(json));
+            }
+            catch(Exception ex)
+            {
 
-            return CountryDataList;
+            }
+
+            return CountryData;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace XamarinNativeTrainingPOC.Models
     {
         [JsonProperty(PropertyName = "title")]
         public string Title { get; set; }
+
         [JsonProperty(PropertyName = "rows")]
         public List<Row> CountryData { get; set; }
     }

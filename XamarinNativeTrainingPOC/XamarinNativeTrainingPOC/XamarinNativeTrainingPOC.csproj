@@ -35,6 +35,8 @@
     <Compile Include="Services\Interfaces\ApiDefinitions\CanadaDataServiceApi.cs" />
     <Compile Include="Models\CanadaCountryData.cs" />
     <Compile Include="Services\CanadaDataService.cs" />
+    <Compile Include="ViewModels\ConadaDataViewModel.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />

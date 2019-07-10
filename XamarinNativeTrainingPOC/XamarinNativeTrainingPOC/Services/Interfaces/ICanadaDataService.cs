@@ -7,7 +7,7 @@ namespace XamarinNativeTrainingPOC.Services.Interfaces
 {
     public interface ICanadaDataService<T>
     {
-        Task<IEnumerable<T>> GetCanadaData();
+        Task<T> GetCanadaData();
          
     }
 }
